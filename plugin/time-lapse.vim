@@ -44,7 +44,7 @@ endfunction
 
 function! Blame()
 	let current = t:commits[t:current]
-	let line = getpos(".")[1]
+	let line = line('.')
 
 	let output = system('git blame -p -n -L'.line.','.line.' '.
 						\current.' -- '.t:path)
@@ -93,6 +93,7 @@ function! TimeLapse()
 	" Open a new tab with a time-lapse view of the file in the current
 	" buffer.
 	let path = ChDir()
+	let here = line('.')
 
 	tabnew
 	let t:path = path
@@ -128,4 +129,10 @@ function! TimeLapse()
 	windo map <buffer> <S-Right> :call Goto(0) <cr>
 
 	windo map <buffer>  :call Blame() <cr>
+
+	" Go to the top right window (which contains the latest version of the
+	" file) and go back to the line we were on when we opened the time-lapse,
+	" so we can immediately Blame from there which is a common use-case.
+	2 wincmd w
+	exe ':'.here
 endfunction
