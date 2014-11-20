@@ -15,11 +15,16 @@ function! Display(commit)
 
 	wincmd t
 	diffthis
+
 	wincmd l
 	diffthis
 
+	" Move back to where we were
+	exe ':'.s:here
+	normal z.
+
 	wincmd j
-	normal gg
+	:0
 endfunction
 
 function! Goto(pos)
@@ -93,7 +98,7 @@ function! TimeLapse()
 	" Open a new tab with a time-lapse view of the file in the current
 	" buffer.
 	let path = ChDir()
-	let here = line('.')
+	let s:here = line('.')
 
 	tabnew
 	let t:path = path
@@ -134,5 +139,6 @@ function! TimeLapse()
 	" file) and go back to the line we were on when we opened the time-lapse,
 	" so we can immediately Blame from there which is a common use-case.
 	2 wincmd w
-	exe ':'.here
+	exe ':'.s:here
+	normal z.
 endfunction
